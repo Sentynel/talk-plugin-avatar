@@ -1,0 +1,8 @@
+{
+  "name": "@coralproject/talk-plugin-avatar",
+  "version": "1.0.0",
+  "description": "Provides support for avatars hosted via third party",
+  "main": "index.js",
+  "author": "The Coral Project Team <coral@mozillafoundation.org>",
+  "license": "Apache-2.0"
+}
