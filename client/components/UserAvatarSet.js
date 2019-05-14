@@ -1,4 +1,5 @@
 import React from 'react';
+import { Button, TextField } from 'plugin-api/beta/client/components/ui';
 
 class UserAvatarSet extends React.Component {
     constructor(props) {
@@ -22,11 +23,8 @@ class UserAvatarSet extends React.Component {
         return <section className={'talk-plugin-avatar-section'}>
             <h3>Avatar</h3>
             <form onSubmit={this.handleSubmit}>
-            <label>
-            Avatar URL:
-            <input type="text" value={this.state.value} onChange={this.handleChange} />
-            </label>
-            <input type="submit" value="Submit" />
+            <TextField label="Avatar URL" value={this.state.value} onChange={this.handleChange} />
+            <Button type="submit">Set avatar</Button>
             </form>
             </section>;
     }
