@@ -1,5 +1,6 @@
 // We need the UserModel because we need to update the user.
 const UserModel = require('models/user');
+const { ErrNotAuthorized } = require('errors');
 
 // Get some middleware to use with the webhook.
 const auth = require('middleware/authentication');
@@ -28,6 +29,9 @@ module.exports = {
 
     type User {
       avatar: String
+    }
+
+    type RootMutation {
       setAvatar(avatar: String!): SetAvatarResponse
     }
   `,
@@ -42,56 +46,31 @@ module.exports = {
 
         return DEFAULT_AVATAR;
       },
-      setAvatar(user, {avatar}, ctx) {
-        return setAvatar(user.id, avatar);
-      }
-    }
+    },
+    RootMutation: {
+      async setAvatar(
+        obj,
+        { avatar },
+        { mutators: { User } },
+      ) {
+        await User.setAvatar(avatar);
+      },
+    },
   },
 
-  //context: ctx => ({
-  //  User: {
-      //
-  //  }
-  //}),
+  mutators: ctx => {
+    const {
+      connectors: { errors: ErrNotAuthorized },
+    } = ctx;
+    let mutators = {
+      User: {
+        setAvatar: () => Promise.reject(new ErrNotAuthorized()),
+      },
+    };
 
-  // The custom router routes that we add here will allow an external system to
-  // update the avatar when it changes on the remote system. Note that we do
-  // use the auth/authz middleware, checking for the ADMIN role. This can be
-  // used in conjunction with a personal access token generated from an ADMIN.
-  // 
-  // router(router) {
-  //   router.post('/webhooks/user_update', auth, authz.needed('ADMIN'), async (req, res, next) => {
-
-  //     // We expect that the payload for the new avatar is in the following form:
-  //     //
-  //     // {
-  //     //   "id": "123123-123123-12312313",
-  //     //   "avatar": "https://great-cdn.cloudfront.net/best-photo.jpg"
-  //     //   ...
-  //     // }
-
-  //     // Extract the data from the payload.
-  //     let {
-  //       id,
-  //       avatar
-  //     } = req.body;
-
-  //     try {
-
-  //       // Update the user model.
-  //       await UserModel.update({id}, {
-  //         $set: {
-  //           'metadata.avatar': avatar
-  //         }
-  //       });
-
-  //     } catch (e) {
-  //       return next(e);
-  //     }
-
-  //     // Respond with a `202 Accepted` to indicate that we were able to process
-  //     // the update.
-  //     res.status(202).end();
-  //   });
-  // }
+    if (ctx.user) {
+      mutators.User.setAvatar = avatar => setAvatar(ctx.user.id, avatar);
+    }
+    return mutators;
+  },
 };
