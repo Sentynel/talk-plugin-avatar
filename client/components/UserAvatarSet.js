@@ -23,7 +23,7 @@ class UserAvatarSet extends React.Component {
         return <section className={'talk-plugin-avatar-section'}>
             <h3>Avatar</h3>
             <form onSubmit={this.handleSubmit}>
-            <TextField label="Avatar URL" value={this.state.value} onChange={this.handleChange} />
+            <TextField type="url" label="Avatar URL" value={this.state.value} onChange={this.handleChange} />
             <Button type="submit">Set avatar</Button>
             </form>
             </section>;
