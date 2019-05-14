@@ -1,5 +1,28 @@
 import React from 'react';
 import { Button, TextField } from 'plugin-api/beta/client/components/ui';
+import { withMutation } from 'plugin-api/beta/client/hocs';
+import { gql } from 'react-apollo';
+
+const withSetAvatar = withMutation(
+  gql`
+    mutation SetAvatar($avatar: String!) {
+      setAvatar(avatar: $avatar) {
+        errors {translation_key}
+      }
+    }
+  `,
+  {
+    props: ({ mutate }) => ({
+      setAvatar: avatar => {
+        return mutate({
+          variables: {
+            avatar,
+          },
+        });
+      },
+    }),
+  }
+);
 
 class UserAvatarSet extends React.Component {
     constructor(props) {
@@ -15,8 +38,8 @@ class UserAvatarSet extends React.Component {
     }
 
     handleSubmit(event) {
-        console.log("submitted");
         event.preventDefault();
+        this.props.setAvatar(this.state.value);
     }
 
     render() {
@@ -30,4 +53,4 @@ class UserAvatarSet extends React.Component {
     }
 }
 
-export default UserAvatarSet;
+export default withSetAvatar(UserAvatarSet);

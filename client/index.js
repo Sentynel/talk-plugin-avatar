@@ -17,7 +17,7 @@ export default {
         }
       }`,
     },
-    mutations: {
+  mutations: {
     PostComment: ({variables}) => ({
       optimisticResponse: {
         createComment: {
