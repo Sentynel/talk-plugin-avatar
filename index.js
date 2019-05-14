@@ -9,13 +9,26 @@ const authz = require('middleware/authorization');
 // option later if you want to go that route.
 const DEFAULT_AVATAR = process.env.DEFAULT_AVATAR;
 
+async function setAvatar(id, avatarUrl) {
+  let user = await UserModel.findOneAndUpdate(
+    {id},
+    {$set: {metadata: {avatar: avatarUrl}}}
+  );
+  return user;
+}
+
 module.exports = {
 
   // The new type definitions provides the new "avatar" field needed to inject
   // into the User type.
   typeDefs: `
+    type SetAvatarResponse implements Response {
+      errors: [UserError!]
+    }
+
     type User {
       avatar: String
+      setAvatar(avatar: String!): SetAvatarResponse
     }
   `,
 
@@ -28,9 +41,18 @@ module.exports = {
         }
 
         return DEFAULT_AVATAR;
+      },
+      setAvatar(user, {avatar}, ctx) {
+        return setAvatar(user.id, avatar);
       }
     }
   },
+
+  //context: ctx => ({
+  //  User: {
+      //
+  //  }
+  //}),
 
   // The custom router routes that we add here will allow an external system to
   // update the avatar when it changes on the remote system. Note that we do
