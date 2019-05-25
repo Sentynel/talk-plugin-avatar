@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, TextField } from 'plugin-api/beta/client/components/ui';
-import { withMutation } from 'plugin-api/beta/client/hocs';
+import { withMutation, withFragments } from 'plugin-api/beta/client/hocs';
 import { gql } from 'react-apollo';
 
 const withSetAvatar = withMutation(
@@ -24,10 +24,22 @@ const withSetAvatar = withMutation(
   }
 );
 
+const withGetAvatar = withFragments({
+  root: gql`
+    fragment GetMyAvatar on RootQuery {
+      me {
+        avatar
+      }
+    }`
+});
+
 class UserAvatarSet extends React.Component {
     constructor(props) {
         super(props);
         this.state = {value: '', button: 'Set avatar'};
+        if (props.root.me.avatar) {
+            this.state.value = props.root.me.avatar;
+        }
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -56,4 +68,4 @@ class UserAvatarSet extends React.Component {
     }
 }
 
-export default withSetAvatar(UserAvatarSet);
+export default withGetAvatar(withSetAvatar(UserAvatarSet));
