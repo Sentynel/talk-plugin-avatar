@@ -59,7 +59,7 @@ class UserAvatarSet extends React.Component {
     render() {
         return <section className={'talk-plugin-avatar-section'}>
             <h3>Avatar</h3>
-            <p>Set an avatar image here. It will need to be hosted elsewhere - we recommend <a href="https://imgur.com">Imgur</a>. Upload the image, then once it's done uploading, right click it and select "Copy image address", and paste that into the box. Please try and keep avatars small - you can use Imgur's resize tool (hover over the image, click the dropdown, click "Edit image", and resize to 100x100 or so, then "Apply" and "Save").</p>
+            <p>Set an avatar image here. It will need to be hosted elsewhere - we recommend <a href="https://imgur.com" target="_blank">Imgur</a>. Upload the image, then once it's done uploading, right click it and select "Copy image address", and paste that into the box. Please try and keep avatars small - you can use Imgur's resize tool (hover over the image, click the dropdown, click "Edit image", and resize to 100x100 or so, then "Apply" and "Save").</p>
             <form onSubmit={this.handleSubmit}>
             <TextField type="url" label="Avatar URL" value={this.state.value} onChange={this.handleChange} />
             <Button type="submit">{this.state.button}</Button>
